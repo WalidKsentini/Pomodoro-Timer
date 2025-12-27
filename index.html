@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pomodoro Timer</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="title">Pomodoro Timer</div>
+        <div class="date" id="dateText">—</div>
+      </div>
+
+      <button class="iconbtn" id="menuBtn" aria-label="Open menu">
+        <span class="icon">⚙︎</span>
+      </button>
+
+      <!-- Right-side vertical menu -->
+      <div class="menuRight" id="menu">
+        <div class="menuRightCard">
+          <button class="menuItem" id="openHistory">History</button>
+          <button class="menuItem" id="openSettings">Settings</button>
+          <button class="menuItem" id="themeToggle">Light / Dark</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Mode tabs (like screenshot) -->
+    <section class="tabsWrap">
+      <div class="tabs" role="tablist" aria-label="Timer modes">
+        <button class="tab active" data-mode="focus" role="tab" aria-selected="true">Focus</button>
+        <button class="tab" data-mode="short" role="tab" aria-selected="false">Short Break</button>
+        <button class="tab" data-mode="long" role="tab" aria-selected="false">Long Break</button>
+      </div>
+    </section>
+
+    <!-- Main Timer -->
+    <main class="main">
+      <section class="timerCard">
+        <div class="timerInner">
+          <svg class="ring" width="320" height="320" viewBox="0 0 320 320" aria-hidden="true">
+            <circle class="ringBg" cx="160" cy="160" r="120"></circle>
+            <circle class="ringFg" cx="160" cy="160" r="120" id="ringFg"></circle>
+          </svg>
+
+          <div class="timeStack">
+            <div class="time" id="timeText">25:00</div>
+            <div class="phase" id="phaseText">FOCUS</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="controlsWrap">
+        <button class="resetSmall" id="resetBtn" title="Reset" aria-label="Reset">↺</button>
+
+        <button class="playBtn" id="startPauseBtn" aria-label="Start timer">
+          <span id="playIcon">▶</span>
+        </button>
+      </section>
+
+      <!-- Bottom achievements (two cards like screenshot) -->
+      <section class="bottomGrid">
+        <div class="bottomCard">
+          <div class="bottomTitle">DAILY GOAL</div>
+          <div class="bottomBig">
+            <span id="goalDone">0</span>
+            <span class="bottomSmall">/ <span id="goalTotal">8</span> sessions</span>
+          </div>
+
+          <div class="progressBar">
+            <div class="progressFill" id="sessionProgressFill"></div>
+          </div>
+
+          <div class="bottomHint" id="goalHint">8 more to reach your goal</div>
+        </div>
+
+        <div class="bottomCard">
+          <div class="bottomTitle">TIME FOCUSED</div>
+          <div class="bottomBig">
+            <span id="focusedMins">0</span>
+            <span class="bottomSmall">mins</span>
+          </div>
+
+          <div class="statusRow">
+            <span class="statusDot"></span>
+            <span id="lastSessionText">Last session: None yet</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quote last, styled like a quote -->
+      <footer class="quoteBlock">
+        <div class="quoteText" id="quoteText">“…”</div>
+        <div class="quoteAuthor" id="quoteAuthor">—</div>
+      </footer>
+
+    </main>
+
+    <!-- History Modal -->
+    <div class="modal" id="historyModal" aria-hidden="true">
+      <div class="modalCard">
+        <div class="modalHeader">
+          <div class="modalTitle">History</div>
+          <button class="iconbtn" id="closeHistory" aria-label="Close">✕</button>
+        </div>
+        <div class="modalBody">
+          <div class="muted small">Recent sessions (localStorage)</div>
+          <div class="historyList" id="historyList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal" aria-hidden="true">
+      <div class="modalCard">
+        <div class="modalHeader">
+          <div class="modalTitle">Settings</div>
+          <button class="iconbtn" id="closeSettings" aria-label="Close">✕</button>
+        </div>
+
+        <div class="modalBody">
+          <div class="row">
+            <div>
+              <div class="label">Focus minutes</div>
+              <div class="desc">Default: 25</div>
+            </div>
+            <input class="input" type="number" id="focusInput" min="1" max="120" />
+          </div>
+
+          <div class="row">
+            <div>
+              <div class="label">Short break minutes</div>
+              <div class="desc">Default: 5</div>
+            </div>
+            <input class="input" type="number" id="shortInput" min="1" max="60" />
+          </div>
+
+          <div class="row">
+            <div>
+              <div class="label">Long break minutes</div>
+              <div class="desc">Default: 15</div>
+            </div>
+            <input class="input" type="number" id="longInput" min="1" max="90" />
+          </div>
+
+          <div class="row">
+            <div>
+              <div class="label">Daily goal (sessions)</div>
+              <div class="desc">Matches the goal card</div>
+            </div>
+            <input class="input" type="number" id="goalInput" min="1" max="30" />
+          </div>
+
+          <div class="row">
+            <div>
+              <div class="label">Auto-start next</div>
+              <div class="desc">Automatically switch + start</div>
+            </div>
+            <input type="checkbox" id="autoStartToggle" />
+          </div>
+
+          <div class="row">
+            <div>
+              <div class="label">Test sound</div>
+              <div class="desc">Plays a beep</div>
+            </div>
+            <button class="btn" id="testSound">Test</button>
+          </div>
+
+          <div class="row">
+            <div>
+              <div class="label">Clear local data</div>
+              <div class="desc">Resets history + settings</div>
+            </div>
+            <button class="btn danger" id="clearData">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
