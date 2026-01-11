@@ -233,9 +233,14 @@ function start(){
   if(state.running) return;
   state.running = true;
   el.playIcon.textContent = "❚❚";
+
+  // ✅ IMPORTANT: prevent jump after pause
+  state.lastPerf = null;
+
   if(!state.phaseStartISO) state.phaseStartISO = new Date().toISOString();
   if(!state.interval) state.interval = setInterval(tick, 250);
 }
+
 
 function pause(){
   state.running = false;
